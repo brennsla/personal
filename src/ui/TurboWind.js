@@ -1,0 +1,6 @@
+export function turboWind(root){
+ const el=document.createElement('div');el.className='turbo-wind';el.setAttribute('aria-hidden','true');
+ const style=document.createElement('style');style.textContent=`.turbo-wind{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:4;opacity:0;transition:opacity .12s}.turbo-wind.active{opacity:1}.turbo-wind i{position:absolute;left:50%;top:47%;height:1px;width:var(--length);background:linear-gradient(90deg,transparent,#fff9e7);transform-origin:0 0;animation:turbo-air var(--duration) linear infinite;animation-delay:var(--delay);animation-play-state:paused}.turbo-wind.active i{animation-play-state:running}@keyframes turbo-air{0%{transform:rotate(var(--angle)) translateX(26vmin) scaleX(.35);opacity:0}20%{opacity:.8}100%{transform:rotate(var(--angle)) translateX(95vmax) scaleX(2.5);opacity:0}}@media(prefers-reduced-motion:reduce){.turbo-wind.active{opacity:.3}.turbo-wind i{animation-duration:1.5s}}`;
+ el.append(style);for(let i=0;i<28;i++){const line=document.createElement('i');line.style.cssText=`--angle:${i*137.508}deg;--length:${3+i%5}vmin;--duration:${.38+i%4*.07}s;--delay:${-i*.137}s`;el.append(line);}root.append(el);
+ return {set(active){el.classList.toggle('active',!!active);},element:el};
+}
