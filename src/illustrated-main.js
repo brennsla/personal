@@ -31,6 +31,7 @@ async function launch(){
   fineWireframe(game.scene).set(true);
   illustratedHorizon(game.scene);
   const inkToggle=document.createElement('button');inkToggle.textContent='CONTORNOS: ON';inkToggle.style.cssText='position:absolute;bottom:12px;right:12px;z-index:25;padding:8px;font:12px system-ui';inkToggle.onclick=()=>{const pass=game.composer.passes[1];pass.enabled=!pass.enabled;inkToggle.textContent='CONTORNOS: '+(pass.enabled?'ON':'OFF');};game.root.append(inkToggle);
+  inkToggle.classList.add('ink-toggle');
   game.scene.background=new T.Color('#95c8e5');game.scene.fog=new T.Fog('#b3d1dc',420,1600);game.camera.far=Math.max(game.camera.far,2400);game.camera.updateProjectionMatrix();
   const wind=turboWind(game.root),render=game.composer.render.bind(game.composer);game.composer.render=(...args)=>{const active=game.controller.boosting&&!game.finished;game.composer.setTurbo?.(active?1:0);wind.set(active);return render(...args);};
   game.sun.color.set('#fff2db');game.sun.intensity=1.5;game.sunOffset.set(-65,95,-70);

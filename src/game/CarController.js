@@ -2,15 +2,18 @@ import * as THREE from 'three';
 import {nearestTrackPoint} from '../utils/trackMath.js';
 import {vehicleContact} from './Collision.js';
 import {steeringStep} from './Steering.js';
+import {touchControls} from '../ui/TouchControls.js';
 export class CarController{
- constructor(car,track,stats={}){
+ constructor(car,track,stats={},root){
   this.gentleSteering=stats.gentleSteering===true;
   Object.assign(this,{car,track,speed:0,steer:0,turbo:0,boosting:false,keys:{},topSpeed:stats.topSpeed||37,acceleration:stats.acceleration||12,handling:stats.handling||.9});
   this.onDown=e=>{this.keys[e.code]=true;if(/Arrow|Space/.test(e.code))e.preventDefault()};this.onUp=e=>this.keys[e.code]=false;this.onBlur=()=>this.keys={};
   addEventListener('keydown',this.onDown);addEventListener('keyup',this.onUp);addEventListener('blur',this.onBlur);
+  this.touchKeys={};this.touch=root?touchControls(root,this.touchKeys):null;
  }
  update(dt){
-  const k=this.keys,gas=k.KeyW||k.ArrowUp,brake=k.KeyS||k.ArrowDown;
+  const k={...this.keys};for(const code in this.touchKeys)k[code]=k[code]||this.touchKeys[code];
+  const gas=k.KeyW||k.ArrowUp,brake=k.KeyS||k.ArrowDown;
   this.boosting=!!((k.ShiftLeft||k.ShiftRight)&&this.turbo>0&&this.speed>2);
   if(this.boosting)this.turbo=Math.max(0,this.turbo-dt);
   const limit=this.topSpeed+(this.boosting?14:0);
@@ -30,5 +33,5 @@ export class CarController{
   this.car.rotation.z=0;this.car.position.y=.092;return near.t;
  }
  resolveCollisions(vehicles){for(const v of vehicles){const c=vehicleContact(this.car,v.car);if(!c)continue;this.car.position.x+=c.normal.x*(c.overlap+.01);this.car.position.z+=c.normal.z*(c.overlap+.01);const closing=Math.max(0,this.speed-v.currentSpeed);this.speed-=Math.min(Math.max(this.speed,0)*.3,closing*.4+.4);v.bump?.(Math.max(1,closing*.3));}}
- dispose(){removeEventListener('keydown',this.onDown);removeEventListener('keyup',this.onUp);removeEventListener('blur',this.onBlur);}
+ dispose(){this.touch?.dispose();removeEventListener('keydown',this.onDown);removeEventListener('keyup',this.onUp);removeEventListener('blur',this.onBlur);}
 }

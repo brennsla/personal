@@ -60,7 +60,7 @@ export class Game{
     this.setupSmoke();this.pendingModels=[this.scene.userData.environmentReady||Promise.resolve()];this.loaded=false;
     this.pendingModels.push(loadVehicleModel(this.selection.id,this.selection.color).then(model=>{this.player.add(model);this.player.userData.hitbox=model.userData.hitbox;this.player.wheels=model.wheels||[]}));
     const slot=gridSlot(this.track,0),gridT=slot.t;this.player.position.copy(slot.position);this.player.position.y=.092;this.player.rotation.y=slot.heading;
-    this.controller=new CarController(this.player,this.track,this.selection.stats);this.cam=new CameraController(this.camera,this.renderer,this.player);this.cam.update(10,0);
+    this.controller=new CarController(this.player,this.track,this.selection.stats,this.root);this.cam=new CameraController(this.camera,this.renderer,this.player);this.cam.update(10,0);
     this.ai=[];const pool=(this.selection.rivalPool||[['police',0xffffff],['hummer',0x426144],['renegade',0xffffff],['modern',0xffffff],['orange',0xffffff],['duster',0xffffff],['luxury',0xd33c2f],['trail',0xe58824],['defender',0x2468a8]]).filter(([id])=>id!==this.selection.id);const rivals=Array.from({length:(this.selection.racers||2)-1},(_,i)=>pool[i%pool.length]);
     rivals.forEach(([id,c],i)=>{const car=new THREE.Group();car.wheels=[];this.scene.add(car);this.pendingModels.push(loadVehicleModel(id,c).then(model=>{car.add(model);car.userData.hitbox=model.userData.hitbox;car.wheels=model.wheels||[]}));const slot=gridSlot(this.track,i+1);const rival=new AIVehicle(car,this.track,slot.t,(34+i*.45)*1.4,slot.lane);rival.update(0);rival.modelId=id;this.ai.push(rival)});
     this.box=new THREE.BoxHelper(this.player,0x50ff90);this.box.visible=false;this.scene.add(this.box);
