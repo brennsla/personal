@@ -43,7 +43,5 @@ async function launch(){
  const game=new Game(root,selection,launch);game.start();
 }
 const landing=showLanding(root);
-root.querySelector('.title-screen header').textContent='SÃO PAULO / EDIÇÃO ILUSTRADA';
 root.querySelector('.title-kicker').textContent='UMA CIDADE. UMA NOVA PERSPECTIVA.';
-root.querySelector('.title-screen main p').textContent='Tons suaves. Disputas intensas. Escolha seu SUV e conquiste seu lugar no grid.';
 landing.then(launch);
